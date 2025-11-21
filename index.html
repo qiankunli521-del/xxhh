@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>爱心动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fdf2f7;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        /* 大爱心样式 */
+        .big-heart {
+            width: 150px;
+            height: 150px;
+            background-color: #ff4d6d;
+            transform: rotate(45deg);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+        
+        .big-heart:before, .big-heart:after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: #ff4d6d;
+            border-radius: 50%;
+        }
+        
+        .big-heart:before {
+            top: -75px;
+            left: 0;
+        }
+        
+        .big-heart:after {
+            top: 0;
+            left: -75px;
+        }
+        
+        .big-heart:hover {
+            transform: rotate(45deg) scale(1.1);
+        }
+        
+        /* 小爱心样式 */
+        .small-heart {
+            position: absolute;
+            background-color: #ff4d6d;
+            transform: rotate(45deg);
+            opacity: 0;
+        }
+        
+        .small-heart:before, .small-heart:after {
+            content: '';
+            position: absolute;
+            background-color: inherit;
+            border-radius: 50%;
+        }
+        
+        .small-heart:before {
+            top: -50%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .small-heart:after {
+            top: 0;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 文字样式 */
+        .message {
+            position: absolute;
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff4d6d;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease 1.5s; /* 延迟稍长，确保所有爱心消失 */
+            z-index: 5;
+        }
+        
+        /* 小爱心动画 */
+        @keyframes heartAnimation {
+            0% {
+                transform: rotate(45deg) scale(0.3);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) scale(2);
+                opacity: 0;
+            }
+        }
+        
+        /* 显示文字的动画类 */
+        .show-message {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <!-- 大爱心 -->
+    <div class="big-heart" id="bigHeart"></div>
+    
+    <!-- 文字信息（初始隐藏） -->
+    <div class="message" id="message">你是我的狗</div>
+
+    <script>
+        // 获取元素
+        const bigHeart = document.getElementById('bigHeart');
+        const message = document.getElementById('message');
+        const body = document.body;
+        
+        // 点击大爱心时触发动画
+        bigHeart.addEventListener('click', function() {
+            // 隐藏大爱心
+            bigHeart.style.display = 'none';
+            
+            // 创建521个小爱心（核心修改：将100改为521）
+            for (let i = 0; i < 521; i++) {
+                createSmallHeart();
+            }
+            
+            // 所有小爱心动画结束后显示文字（延迟稍长，确保521个爱心都消失）
+            setTimeout(() => {
+                message.classList.add('show-message');
+            }, 2500);
+        });
+        
+        // 创建小爱心的函数
+        function createSmallHeart() {
+            // 创建小爱心元素
+            const heart = document.createElement('div');
+            heart.classList.add('small-heart');
+            
+            // 随机大小（5-15px）
+            const size = Math.random() * 10 + 5;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            
+            // 随机位置（基于屏幕中心，扩大偏移范围避免拥挤）
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const offsetX = (Math.random() - 0.5) * 300; // 扩大左右偏移范围
+            const offsetY = (Math.random() - 0.5) * 300; // 扩大上下偏移范围
+            
+            heart.style.left = `${centerX + offsetX}px`;
+            heart.style.top = `${centerY + offsetY}px`;
+            
+            // 随机动画时长（1-2.5秒，避免动画过于仓促）
+            const duration = Math.random() * 1.5 + 1;
+            heart.style.animation = `heartAnimation ${duration}s ease forwards`;
+            
+            // 随机颜色（增加更多粉色系，避免单调）
+            const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1', '#ffccd5', '#fda4af'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            heart.style.backgroundColor = color;
+            
+            // 添加到页面
+            body.appendChild(heart);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+    </script>
+</body>
+</html>
